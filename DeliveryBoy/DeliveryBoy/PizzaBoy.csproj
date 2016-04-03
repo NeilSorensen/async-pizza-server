@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CouponVerifier.cs" />
     <Compile Include="JsonByteArraySerializer.cs" />
     <Compile Include="OrderAccepted.cs" />
+    <Compile Include="OrderAssembler.cs" />
     <Compile Include="PizzaOrder.cs" />
     <Compile Include="PizzaOven.cs" />
     <Compile Include="Program.cs" />

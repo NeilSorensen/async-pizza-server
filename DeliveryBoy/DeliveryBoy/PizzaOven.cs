@@ -54,7 +54,7 @@ namespace DeliveryBoy
                 Toppings = pizzaOrder.Toppings,
             };
             var props = model.CreateBasicProperties();
-            props.Persistent = true;
+            props.Persistent = false;
             props.ContentEncoding = "UTF8";
             model.BasicPublish(PizzaBakedExchange, "", props, serializer.Serialize(finishedPizza));
         }

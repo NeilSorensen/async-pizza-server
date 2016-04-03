@@ -16,13 +16,16 @@ namespace DeliveryBoy
             
             var register = new CashRegister(connectionFactory.CreateConnection().CreateModel(), serializer);
             var oven = new PizzaOven(connectionFactory.CreateConnection().CreateModel(), serializer, new Random());
+            var orderAssembler = new OrderAssembler(connectionFactory.CreateConnection().CreateModel(), serializer, new CouponVerifier());
             register.Register();
             oven.Register();
+            orderAssembler.Register();
 
             Console.ReadLine();
             
             oven.Deregister();
-            register.Register();
+            register.Deregister();
+            orderAssembler.Deregister();
         }
     }
 }
