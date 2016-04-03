@@ -13,6 +13,7 @@ namespace DeliveryBoy
         private EventingBasicConsumer consumer;
         private string consumerTag;
         private JsonByteArraySerializer serializer;
+        private readonly CouponVerifier couponVerifier;
         private decimal BasePrice = 5.50M;
 
         public const string OrderExchangeName = "ordered_placed";
@@ -21,10 +22,11 @@ namespace DeliveryBoy
         public const string OrderAcceptedExchange = "order_accepted";
 
 
-        public CashRegister(IModel model, JsonByteArraySerializer serializer)
+        public CashRegister(IModel model, JsonByteArraySerializer serializer, CouponVerifier couponVerifier)
         {
             this.model = model;
             this.serializer = serializer;
+            this.couponVerifier = couponVerifier;
         }
 
         public void Register()
@@ -57,7 +59,7 @@ namespace DeliveryBoy
             {
                 model.BasicAck(e.DeliveryTag, false);
             }
-            var orderPrice = CalculateOrderCost(order.Pizzas);
+            var orderPrice = CalculateOrderCost(order);
             var preparedPizzas = order.Pizzas.ToDictionary(x => Guid.NewGuid(), x => x);
             AcceptOrder(orderId, orderPrice, preparedPizzas.Keys.ToArray(), order);
             OrderPizzas(preparedPizzas, orderId);
@@ -75,7 +77,7 @@ namespace DeliveryBoy
             };
 
             var props = model.CreateBasicProperties();
-            props.Persistent = true;
+            props.Persistent = false;
             props.ContentEncoding = "UTF8";
             model.BasicPublish(OrderAcceptedExchange, "", props, serializer.Serialize(accepted));
         }
@@ -96,14 +98,15 @@ namespace DeliveryBoy
             };
 
             var props = model.CreateBasicProperties();
-            props.Persistent = true;
+            props.Persistent = false;
             props.ContentEncoding = "UTF8";
             model.BasicPublish(PizzaOrderedExchange, "", props, serializer.Serialize(order));
         }
 
-        private decimal CalculateOrderCost(IEnumerable<Pizza> pizzas)
+        private decimal CalculateOrderCost(OrderPlaced order)
         {
-            return pizzas.Select(CalculatePizzaCost).Sum() + 2.8M;
+            var couponMultiplier = couponVerifier.CouponIsValid(order.Coupon, order.Customer) ? .5M : 1M;
+            return (order.Pizzas.Select(CalculatePizzaCost).Sum() + 2.8M) * couponMultiplier;
         }
 
         private decimal CalculatePizzaCost(Pizza pizza)
