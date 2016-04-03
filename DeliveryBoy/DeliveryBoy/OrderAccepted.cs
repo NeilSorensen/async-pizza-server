@@ -6,13 +6,20 @@ using System.Threading.Tasks;
 
 namespace DeliveryBoy
 {
+    public class OrderPlaced
+    {
+        public IList<Pizza> Pizzas { get; set; }
+        public string Address { get; set; }
+        public string Customer { get; set; }
+    }
+
     public class OrderAccepted
     {
         public Guid OrderId { get; set; }
         public Guid[] Pizzas { get; set; }
         public decimal OrderPrice { get; set; }
         public string Address { get; set; }
-        public string DeliverTo { get; set; }
+        public string Customer { get; set; }
     }
 
     public class OrderFilled

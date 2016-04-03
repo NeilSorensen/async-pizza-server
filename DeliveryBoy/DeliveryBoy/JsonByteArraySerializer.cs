@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace DeliveryBoy
@@ -7,6 +8,11 @@ namespace DeliveryBoy
     public class JsonByteArraySerializer
     {
         private readonly JsonSerializerSettings settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+
+        public JsonByteArraySerializer()
+        {
+            settings.Converters.Add(new StringEnumConverter());   
+        }
 
         public byte[] Serialize<T>(T toSerialize)
         {

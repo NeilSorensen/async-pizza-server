@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -28,9 +29,11 @@ namespace DeliveryBoy
 
         public void Register()
         {
+            model.ExchangeDeclare(OrderExchangeName, ExchangeType.Fanout, true);
             model.QueueDeclare(QueueName, true, false, false, null);
             model.QueueBind(QueueName, OrderExchangeName, "");
             model.ExchangeDeclare(PizzaOrderedExchange, ExchangeType.Fanout, true);
+            model.ExchangeDeclare(OrderAcceptedExchange, ExchangeType.Fanout, true);
 
             consumer = new EventingBasicConsumer(model);
             consumer.Received += OrderRecieved;
@@ -39,7 +42,42 @@ namespace DeliveryBoy
 
         private void OrderRecieved(object sender, BasicDeliverEventArgs e)
         {
-            throw new NotImplementedException();
+            var orderId = Guid.NewGuid();
+            OrderPlaced order = null;
+            try
+            {
+                order = serializer.Deserialize<OrderPlaced>(e.Body);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unprocessable Order! " + Encoding.UTF8.GetString(e.Body).Replace("\n", " "));
+                return;
+            }
+            finally
+            {
+                model.BasicAck(e.DeliveryTag, false);
+            }
+            var orderPrice = CalculateOrderCost(order.Pizzas);
+            var preparedPizzas = order.Pizzas.ToDictionary(x => Guid.NewGuid(), x => x);
+            AcceptOrder(orderId, orderPrice, preparedPizzas.Keys.ToArray(), order);
+            OrderPizzas(preparedPizzas, orderId);
+        }
+
+        private void AcceptOrder(Guid orderId, decimal orderPrice, Guid[] pizzaIds, OrderPlaced order)
+        {
+            var accepted = new OrderAccepted
+            {
+                OrderId = orderId,
+                Address = order.Address,
+                Customer = order.Customer,
+                OrderPrice = orderPrice,
+                Pizzas = pizzaIds
+            };
+
+            var props = model.CreateBasicProperties();
+            props.Persistent = true;
+            props.ContentEncoding = "UTF8";
+            model.BasicPublish(OrderAcceptedExchange, "", props, serializer.Serialize(accepted));
         }
 
         private void OrderPizzas(IDictionary<Guid,Pizza> pizzas, Guid orderId)
@@ -92,9 +130,15 @@ namespace DeliveryBoy
             return 10M;
         }
 
-        public decimal GetToppingPrice(string topping)
+        private decimal GetToppingPrice(string topping)
         {
             return 1.50M;
+        }
+
+        public void Deregister()
+        {
+            model.BasicCancel(consumerTag);
+            consumer.Received -= OrderRecieved;
         }
     }
 }
