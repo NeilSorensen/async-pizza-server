@@ -14,7 +14,7 @@ namespace PizzaHouse.Monitor
         private EventingBasicConsumer consumer;
         private string consumerTag;
         private const string QueueName = ExchangeName + "=>order_monitor";
-        private const string ExchangeName = "ordered_placed";
+        private const string ExchangeName = "order_placed";
         public OrderMonitor(IModel model, JsonByteArraySerializer serializer, CouponVerifier verifier)
         {
             this.model = model;
@@ -25,7 +25,7 @@ namespace PizzaHouse.Monitor
         public void RegisterListener()
         {
             model.QueueDeclare(QueueName, true, false, false, null);
-            model.QueueBind(QueueName, "pizza_ordered", "");
+            model.QueueBind(QueueName, ExchangeName, "");
             model.ExchangeDeclare(ExchangeName, ExchangeType.Fanout, true);
 
             consumer = new EventingBasicConsumer(model);

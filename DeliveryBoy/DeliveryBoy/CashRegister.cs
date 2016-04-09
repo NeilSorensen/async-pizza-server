@@ -17,7 +17,7 @@ namespace DeliveryBoy
         private readonly CouponVerifier couponVerifier;
         private decimal BasePrice = 5.50M;
 
-        public const string OrderExchangeName = "ordered_placed";
+        public const string OrderExchangeName = "order_placed";
         private const string QueueName = OrderExchangeName + "=>cash_register";
         public const string PizzaOrderedExchange = "pizza_ordered";
         public const string OrderAcceptedExchange = "order_accepted";
