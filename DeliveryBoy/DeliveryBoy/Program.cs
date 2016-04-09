@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration;
+using PizzaHouse.Shared;
 using RabbitMQ.Client;
 
 namespace DeliveryBoy
@@ -9,12 +11,13 @@ namespace DeliveryBoy
         {
             var serializer = new JsonByteArraySerializer();
             var connectionFactory = new ConnectionFactory();
-            connectionFactory.HostName = "localhost";
-            connectionFactory.UserName = "guest";
-            connectionFactory.VirtualHost = "/";
-            connectionFactory.Port = 5672;
+            connectionFactory.HostName = ConfigurationManager.AppSettings["RabbitHost"];
+            connectionFactory.UserName = ConfigurationManager.AppSettings["RabbitUsername"];
+            connectionFactory.Password = ConfigurationManager.AppSettings["RabbitPassword"];
+            connectionFactory.VirtualHost = ConfigurationManager.AppSettings["RabbitVirtualHost"];
+            connectionFactory.Port = int.Parse(ConfigurationManager.AppSettings["RabbitPort"]); 
             
-            var register = new CashRegister(connectionFactory.CreateConnection().CreateModel(), serializer);
+            var register = new CashRegister(connectionFactory.CreateConnection().CreateModel(), serializer, new CouponVerifier());
             var oven = new PizzaOven(connectionFactory.CreateConnection().CreateModel(), serializer, new Random());
             var orderAssembler = new OrderAssembler(connectionFactory.CreateConnection().CreateModel(), serializer, new CouponVerifier());
             register.Register();

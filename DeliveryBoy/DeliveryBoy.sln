@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaBoy", "DeliveryBoy\PizzaBoy.csproj", "{565960B4-1A98-490F-BE5E-B7696E1C284B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaHouse.Shared", "PizzaHouse.Shared\PizzaHouse.Shared.csproj", "{C50A406D-51DC-45D3-82A4-AAD568A35260}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaHouse.Monitor", "PizzaHouse.Monitor\PizzaHouse.Monitor.csproj", "{AB9EFB78-54C0-4A4B-A674-E53139741BE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{565960B4-1A98-490F-BE5E-B7696E1C284B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{565960B4-1A98-490F-BE5E-B7696E1C284B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{565960B4-1A98-490F-BE5E-B7696E1C284B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C50A406D-51DC-45D3-82A4-AAD568A35260}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C50A406D-51DC-45D3-82A4-AAD568A35260}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C50A406D-51DC-45D3-82A4-AAD568A35260}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C50A406D-51DC-45D3-82A4-AAD568A35260}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB9EFB78-54C0-4A4B-A674-E53139741BE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB9EFB78-54C0-4A4B-A674-E53139741BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB9EFB78-54C0-4A4B-A674-E53139741BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB9EFB78-54C0-4A4B-A674-E53139741BE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

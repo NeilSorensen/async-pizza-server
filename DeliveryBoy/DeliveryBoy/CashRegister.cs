@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PizzaHouse.Shared;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
